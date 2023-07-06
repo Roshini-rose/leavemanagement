@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using leavemanagement.Constants;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -31,7 +32,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">My Leave</a>
                         </li>
-                        <li class="nav-item dropdown">
+                        @if(User.IsInRole(Roles.Administrator))
+                        {
+                            <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Leave Management
                             </a>
@@ -41,7 +44,8 @@
                                 <li><a class="dropdown-item" href="#">Leave Requests</a></li>
                                 <li><a class="dropdown-item" href="#">Employee Management </a></li>
                             </ul>
-                        </li>
+                        </li>                            
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using leavemanagement.Data;
@@ -11,9 +12,11 @@ using leavemanagement.Data;
 namespace leavemanagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230706054848_adddefaultuserndroles")]
+    partial class adddefaultuserndroles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,14 +54,14 @@ namespace leavemanagement.Migrations
                         new
                         {
                             Id = "b8fae543-5c87-4952-a10e-14f6cea432eb",
-                            ConcurrencyStamp = "a5b7b3b7-68b9-4008-8301-f5b693f90d0f",
+                            ConcurrencyStamp = "7231067c-52f3-4989-ac81-93ebe079903c",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
                             Id = "c7fad533-5d87-4952-a91e-14d6cea462ea",
-                            ConcurrencyStamp = "bf96796d-ddd3-4829-91ca-d5f7a77bf8a7",
+                            ConcurrencyStamp = "0e123445-96f1-4038-a95f-e2432fe447fa",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -269,17 +272,16 @@ namespace leavemanagement.Migrations
                         {
                             Id = "d5fad533-5c87-5952-a90e-24f6cea432ea",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a6e4b04c-c316-4866-9338-e5998c4f138c",
+                            ConcurrencyStamp = "ab489c72-de5d-43ba-804c-052253782f7a",
                             Email = "admin@localhost.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
-                            NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEANLzylyEwlCvrhn+0hso3B1OxEtJgTUsOnjuFpdTIh31h7nYWxP5UQhXN75JPE8Kg==",
+                            NormalizedUserName = "admin@localhost.com",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFpQ5Lf3lTxcvyjpZksSaaV0nGVBM0qJ8apmyIJhciNl51HB9V2rmlNrTxU/Poq0NQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2f3397d0-f410-4d3e-87f7-c03e5676500d",
+                            SecurityStamp = "c95c4a66-3c15-465c-9110-c7b4ca5c2bc1",
                             TwoFactorEnabled = false,
-                            UserName = "admin@localhost.com",
                             datejoined = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             dateofbirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             firstname = "System",
@@ -289,17 +291,16 @@ namespace leavemanagement.Migrations
                         {
                             Id = "e5dad533-5c87-5952-a90e-24f6cea432ea",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c73d6627-689f-4a06-abd9-3eedbd617c4d",
+                            ConcurrencyStamp = "5e3722ec-6586-4149-a596-daff42242947",
                             Email = "user@localhost.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@LOCALHOST.COM",
-                            NormalizedUserName = "USER@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEv9n714qD1UY6fa+O7PKV8ojx8SzTHZSiZ8IeAzhVE0XHbb9oybopycrrB3wmIcaQ==",
+                            NormalizedUserName = "user@localhost.com",
+                            PasswordHash = "AQAAAAEAACcQAAAAEF8MBI6Gh/I/YJbgD9eVebfup7/K4QCz734jpszDOPNWqUEAGCEgYvpNxmgsmBNHMw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c9549535-970e-4029-80a5-672ee325d751",
+                            SecurityStamp = "4cfa88e6-e9a5-4508-95fb-e546786d6e05",
                             TwoFactorEnabled = false,
-                            UserName = "user@localhost.com",
                             datejoined = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             dateofbirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             firstname = "System",
