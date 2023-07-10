@@ -78,7 +78,6 @@ namespace leavemanagement.Repositories
                     noofdays = leavetype.defaultdays
                 });
             }
-
             await AddRangeAsync(allocations);   
         }
 
