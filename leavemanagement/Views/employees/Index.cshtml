@@ -1,0 +1,48 @@
+﻿@model IEnumerable<employeelistvm>
+
+@{
+    ViewData["Title"] = "employees";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.firstname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.lastname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.datejoined)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.firstname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.lastname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.datejoined)
+            </td>
+            <td>
+                <a asp-action="ViewAllocations" class="btn btn-primary" asp-route-id="@item.id">View Allocations</a> |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

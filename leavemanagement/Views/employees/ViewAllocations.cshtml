@@ -1,0 +1,83 @@
+﻿@model leavemanagement.Models.employeeallocationvm
+
+@{
+    ViewData["Title"] = "View Allocations";
+}
+
+<h1>ViewAllocations for @Model.firstname @Model.lastname</h1>
+
+<div>
+    <h4>employeeallocationvm</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.firstname)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.firstname)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.lastname)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.lastname)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.datejoined)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.datejoined)
+        </dd>
+    </dl>
+</div>
+<hr />
+
+<div class="card">
+    <div class="card-header">
+        <h4>Leave Allocations</h4>
+    </div>
+    <ul class="list-group-flush">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col">Leave Name</div>
+                <div class="col">Original Allocation</div>
+                <div class="col">Current Allocation</div>
+                <div class="col">Action</div>
+            </div>
+        @foreach(var allocation in Model.leaveallocations)
+        {
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col">
+                        <h6>@allocation.leavetype.name</h6>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary">
+                            Allocated Days<span class="badge bg-secondary">@allocation.leavetype.defaultdays</span>
+                        </button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-primary">
+                            Remaining Days<span class="badge bg-secondary">@allocation.noofdays</span>
+                        </button>
+                    </div>
+                    <div class="col">
+                        <a class="btn btn-warning" asp-action="EditAllocation" asp-route-id="@allocation.id">
+                            <i class="fas fa-pencil-alt"></i> Edit Allocation
+                        </a>
+                    </div>
+                </div>  
+            </li>
+        }
+    </ul>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-dark">Back to List</a>&nbsp;
+</div>

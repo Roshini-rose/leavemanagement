@@ -16,10 +16,11 @@ namespace leavemanagement.Data
             builder.ApplyConfiguration(new RoleSeedConfiguration());
             builder.ApplyConfiguration(new UserSeedConfiguration());
             builder.ApplyConfiguration(new UserRoleSeedConfiguration());
-
         }
 
         public DbSet<leavetype> leavetypes { get; set; }
         public DbSet<leaveallocation> leaveallocations { get; set; }
+        public DbSet<leaverequest> leaverequests { get; set; }
+
     }
 }
