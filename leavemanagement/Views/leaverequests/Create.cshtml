@@ -24,14 +24,14 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="startdate" class="control-label"></label>
-                        <input asp-for="startdate" class="form-control datepicker" type="text"/>
+                        <input asp-for="startdate" class="form-control DatePicker" type="text"/>
                         <span asp-validation-for="startdate" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="enddate" class="control-label"></label>
-                        <input asp-for="enddate" class="form-control datepicker" type="text" />
+                        <input asp-for="enddate" class="form-control DatePicker" type="text" />
                         <span asp-validation-for="enddate" class="text-danger"></span>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
             </div>
             <br />
             <div class="form-group">
-                <a class="btn btn-secondary btn-block" asp-action="Index">Back to My Leave</a>
+                <a class="btn btn-secondary btn-block" asp-action="MyLeave">Cancel</a>
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

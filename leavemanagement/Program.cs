@@ -6,6 +6,7 @@ using leavemanagement.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,9 @@ builder.Services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
 
 
 builder.Services.AddAutoMapper(typeof(mapperconfig));
+
+builder.Host.UseSerilog((ctx,lc)=> lc.WriteTo.Console()
+                     .ReadFrom.Configuration(ctx.Configuration));
 
 builder.Services.AddControllersWithViews();
 

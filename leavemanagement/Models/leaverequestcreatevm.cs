@@ -7,14 +7,18 @@ namespace leavemanagement.Models
     {
         [Required]
         [Display(Name="Start Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.Date)]
         public DateTime? startdate { get; set; }
 
         [Required]
-        [Display(Name = "Start Date")]
+        [Display(Name = "End Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+        [DataType(DataType.Date)]
         public DateTime? enddate { get; set; }
 
         [Required]
-        [Display(Name = "Leave Type Id")]
+        [Display(Name = "Leave Type")]
         public int leavetypeid { get; set; }
         public SelectList? leavetypes { get; set; }
 

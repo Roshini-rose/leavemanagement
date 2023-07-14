@@ -11,6 +11,7 @@ using leavemanagement.Models;
 using leavemanagement.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using leavemanagement.Constants;
+using leavemanagement.Repositories;
 
 namespace leavemanagement.Controllers
 {
@@ -18,12 +19,15 @@ namespace leavemanagement.Controllers
     public class leavetypesController : Controller
     {
         private readonly ILeaveTypeRepository leaveTypeRepository;
+        private readonly ILeaveAllocationRepository leaveAllocationRepository;
         private readonly IMapper mapper;
 
-        public leavetypesController(ILeaveTypeRepository leaveTypeRepository, IMapper mapper)
+        public leavetypesController(ILeaveTypeRepository leaveTypeRepository, IMapper mapper, 
+            ILeaveAllocationRepository leaveAllocationRepository)
         {
             this.leaveTypeRepository = leaveTypeRepository;
             this.mapper = mapper;
+            this.leaveAllocationRepository = leaveAllocationRepository;
         }
 
         // GET: leavetypes
@@ -92,11 +96,18 @@ namespace leavemanagement.Controllers
                 return NotFound();
             }
 
+            var leavetype = await leaveTypeRepository.GetAsync(id);
+
+            if (leavetype == null)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var leavetype = mapper.Map<leavetype>(leavetypevm);
+                    mapper.Map(leavetypevm, leavetype);
                    await leaveTypeRepository.UpdateAsync(leavetype);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -124,6 +135,14 @@ namespace leavemanagement.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await leaveTypeRepository.DeleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> allocateleave(int id)
+        {
+            await leaveAllocationRepository.leaveallocation(id);
             return RedirectToAction(nameof(Index));
         }
     }

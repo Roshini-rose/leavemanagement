@@ -16,13 +16,16 @@ namespace leavemanagement.Controllers
     [Authorize]
     public class leaverequestsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ILeaveTypeRepository leaveTypeRepository;
         private readonly ILeaveRequestRepository leaveRequestRepository;
+        private readonly ILogger<leaverequestsController> logger;
 
-        public leaverequestsController(ApplicationDbContext context, ILeaveRequestRepository leaveRequestRepository)
+        public leaverequestsController(ILeaveTypeRepository leaveTypeRepository, ILeaveRequestRepository leaveRequestRepository, 
+            ILogger<leaverequestsController> logger)
         {
-            _context = context;
             this.leaveRequestRepository = leaveRequestRepository;
+            this.logger = logger;
+            this.leaveTypeRepository = leaveTypeRepository;
         }
 
         [Authorize(Roles=Roles.Administrator)]
@@ -62,7 +65,7 @@ namespace leavemanagement.Controllers
             }
             catch (Exception ex)
             {
-
+                logger.LogError(ex, "Error Approving Leave Request");
                 throw;
             }
             return RedirectToAction(nameof(Index));
@@ -78,7 +81,7 @@ namespace leavemanagement.Controllers
             }
             catch (Exception ex)
             {
-
+                logger.LogError(ex, "Error Cancelling Leave Request");
                 throw;
             }
             return RedirectToAction(nameof(MyLeave));
@@ -86,11 +89,11 @@ namespace leavemanagement.Controllers
 
 
         // GET: leaverequests/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var model = new leaverequestcreatevm
             {
-                leavetypes = new SelectList(_context.leavetypes, "id", "name")
+                leavetypes = new SelectList(await leaveTypeRepository.GetAllAsync(), "id", "name")
             };
             return View(model);
         }
@@ -116,107 +119,12 @@ namespace leavemanagement.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Error Occurred. Try Later");
+                logger.LogError(ex, "Error Creating Leave Request");
+                ModelState.AddModelError(string.Empty, "Error Occurred. Try Later"+ex.Message);
             }
 
-            model.leavetypes= new SelectList(_context.leavetypes, "id", "name", model.leavetypeid);
+            model.leavetypes= new SelectList(await leaveTypeRepository.GetAllAsync(), "id", "name", model.leavetypeid);
             return View(model);
-        }
-
-        // GET: leaverequests/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.leaverequests == null)
-            {
-                return NotFound();
-            }
-
-            var leaverequest = await _context.leaverequests.FindAsync(id);
-            if (leaverequest == null)
-            {
-                return NotFound();
-            }
-            ViewData["leavetypeid"] = new SelectList(_context.leavetypes, "id", "id", leaverequest.leavetypeid);
-            return View(leaverequest);
-        }
-
-        // POST: leaverequests/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("startdate,enddate,leavetypeid,daterequested,requestcomments,approved,cancelled,requestingemployeeid,id,datecreated,datemodified")] leaverequest leaverequest)
-        {
-            if (id != leaverequest.id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(leaverequest);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!leaverequestExists(leaverequest.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["leavetypeid"] = new SelectList(_context.leavetypes, "id", "id", leaverequest.leavetypeid);
-            return View(leaverequest);
-        }
-
-        // GET: leaverequests/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.leaverequests == null)
-            {
-                return NotFound();
-            }
-
-            var leaverequest = await _context.leaverequests
-                .Include(l => l.leavetype)
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (leaverequest == null)
-            {
-                return NotFound();
-            }
-
-            return View(leaverequest);
-        }
-
-        // POST: leaverequests/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.leaverequests == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.leaverequests'  is null.");
-            }
-            var leaverequest = await _context.leaverequests.FindAsync(id);
-            if (leaverequest != null)
-            {
-                _context.leaverequests.Remove(leaverequest);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool leaverequestExists(int id)
-        {
-          return (_context.leaverequests?.Any(e => e.id == id)).GetValueOrDefault();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using leavemanagement.Contracts;
 using leavemanagement.Data;
 using leavemanagement.Migrations;
@@ -17,9 +18,13 @@ namespace leavemanagement.Repositories
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly ILeaveAllocationRepository leaveAllocationRepository;
         private readonly UserManager<employee> userManager;
+        private AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly IEmailSender emailSender;
+
         public LeaveRequestRepository(ApplicationDbContext context, IMapper mapper,
             IHttpContextAccessor httpContextAccessor,
             ILeaveAllocationRepository leaveAllocationRepository,
+            AutoMapper.IConfigurationProvider configurationProvider, IEmailSender emailSender,
             UserManager<employee> userManager) : base(context) 
         {
             this.context = context;
@@ -27,6 +32,8 @@ namespace leavemanagement.Repositories
             this.httpContextAccessor = httpContextAccessor;
             this.leaveAllocationRepository = leaveAllocationRepository;
             this.userManager = userManager;
+            this.configurationProvider=configurationProvider;
+            this.emailSender=emailSender;
         }
 
         public async Task CancelLeaveRequest(int leaveRequestId)
@@ -34,6 +41,11 @@ namespace leavemanagement.Repositories
             var leaveRequest = await GetAsync(leaveRequestId);
             leaveRequest.cancelled = true;
             await UpdateAsync(leaveRequest);
+
+            var user = await userManager.FindByIdAsync(leaveRequest.requestingemployeeid);
+
+            await emailSender.SendEmailAsync(user.Email, $"Leave Request Cancelled", $"Your leave request from " +
+                $"{leaveRequest.startdate} to {leaveRequest.enddate} has been Cancelled Successfully.");
 
         }
 
@@ -52,6 +64,13 @@ namespace leavemanagement.Repositories
             }
 
             await UpdateAsync(leaveRequest);
+
+            var user = await userManager.FindByIdAsync(leaveRequest.requestingemployeeid);
+            var approvalStatus = approved ? "Approved" : "Declined";
+
+            await emailSender.SendEmailAsync(user.Email, $"Leave Request {approvalStatus}", $"Your leave request from " +
+                $"{leaveRequest.startdate} to {leaveRequest.enddate} has been {approvalStatus}");
+
 
         }
 
@@ -74,10 +93,14 @@ namespace leavemanagement.Repositories
             }
 
             var leaveRequest = mapper.Map<leaverequest>(model);
-            leaveRequest.daterequested = DateTime.UtcNow;
+            leaveRequest.daterequested = DateTime.Now;
             leaveRequest.requestingemployeeid = user.Id;
 
             await AddAsync(leaveRequest);
+
+            await emailSender.SendEmailAsync(user.Email, "Leave Request Submitted Successfully", $"Your leave request from " +
+                $"{leaveRequest.startdate} to {leaveRequest.enddate} has been submitted for approval");
+
 
             return true;
         }
@@ -102,9 +125,11 @@ namespace leavemanagement.Repositories
             return model;
         }
 
-        public async Task<List<leaverequest>> GetAllAsync(string employeeid)
+        public async Task<List<leaverequestvm>> GetAllAsync(string employeeid)
         {
-            return await context.leaverequests.Where(q=>q.requestingemployeeid==employeeid).ToListAsync();
+            return await context.leaverequests.Where(q=>q.requestingemployeeid==employeeid)
+                .ProjectTo<leaverequestvm>(configurationProvider)
+                .ToListAsync();
         }
 
         public async Task<leaverequestvm?> GetLeaveRequestAsync(int? id)
@@ -127,16 +152,11 @@ namespace leavemanagement.Repositories
         {
             var user= await userManager.GetUserAsync (httpContextAccessor?.HttpContext?.User);
             var allocations = (await leaveAllocationRepository.getemployeeallocations(user.Id)).leaveallocations;
-            var requests= mapper.Map<List<leaverequestvm>>(await GetAllAsync(user.Id));
+            var requests= await GetAllAsync(user.Id);
 
             var model=new employeeleaverequestviewvm(allocations, requests);
 
             return model;
-        }
-
-        Task<bool> ILeaveRequestRepository.createleaverequest(leaverequestcreatevm request)
-        {
-            throw new NotImplementedException();
         }
     }
 }

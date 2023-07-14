@@ -41,7 +41,7 @@ namespace leavemanagement.Controllers
         }
 
         // GET: employeesController/EditAllocation/5
-        public async Task<ActionResult> EditAllocation(int id)
+        public async Task<IActionResult> EditAllocation(int? id)
         {
             var model= await leaveAllocationRepository.getemployeeallocation(id);      
             if(model==null)
@@ -54,13 +54,13 @@ namespace leavemanagement.Controllers
         // POST: employeesController/EditAllocation/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditAllocation(int id, leaveallocationeditvm model)
+        public async Task<IActionResult> EditAllocation(int id, leaveallocationeditvm model)
         {
             try
             {
                 if(ModelState.IsValid)
                 {
-                    if(await leaveAllocationRepository.updateemployeeallocation(model))
+                    if(await leaveAllocationRepository.updateemployeeallocation(model)==true)
                     {
                         return RedirectToAction(nameof(ViewAllocations), new { id = model.employeeid });
                     }
@@ -68,7 +68,7 @@ namespace leavemanagement.Controllers
             }
             catch(Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Error occurred. Try Later");
+                ModelState.AddModelError(string.Empty, "Error occurred. Try Later S"+ex);
             }
             model.employee=mapper.Map<employeelistvm>(await userManager.FindByIdAsync(model.employeeid));   
             model.leavetype= mapper.Map<leavetypevm>(await leaveTypeRepository.GetAsync(model.leavetypeid));    

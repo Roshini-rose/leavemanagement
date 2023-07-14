@@ -18,6 +18,21 @@ namespace leavemanagement.Data
             builder.ApplyConfiguration(new UserRoleSeedConfiguration());
         }
 
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in base.ChangeTracker.Entries<baseentity>().Where(q => q.State == EntityState.Added || q.State == EntityState.Modified))
+            {
+                entry.Entity.datemodified = DateTime.UtcNow;
+
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.datecreated = DateTime.UtcNow;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
         public DbSet<leavetype> leavetypes { get; set; }
         public DbSet<leaveallocation> leaveallocations { get; set; }
         public DbSet<leaverequest> leaverequests { get; set; }

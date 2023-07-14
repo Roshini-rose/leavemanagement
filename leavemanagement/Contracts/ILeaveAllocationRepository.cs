@@ -10,7 +10,7 @@ namespace leavemanagement.Contracts
         Task<employeeallocationvm> getemployeeallocations(string employeeid);
         Task<leaveallocation?> getemployeeallocation(string employeeid, int leavetypeid);
 
-        Task<leaveallocationeditvm> getemployeeallocation(int id);
+        Task<leaveallocationeditvm> getemployeeallocation(int? id);
         Task<bool> updateemployeeallocation(leaveallocationeditvm model);
     }
 }
